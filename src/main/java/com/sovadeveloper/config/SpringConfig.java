@@ -1,22 +1,29 @@
 package com.sovadeveloper.config;
 
+import com.sovadeveloper.services.Impl.PetTypeServiceImpl;
+import com.sovadeveloper.services.PetTypeService;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTemplate;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
 @Configuration
-@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "com.sovadeveloper.repositories")
+@EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan("com.sovadeveloper")
 @PropertySource("classpath:application.properties")
+@EnableWebMvc
 public class SpringConfig {
     @Value("${spring.datasource.driverClassName}")
     private String driver;
@@ -42,14 +49,11 @@ public class SpringConfig {
     @Value("${hibernate.format_sql}")
     private String frmtSql;
 
-//    @Bean("petTypeDaoImpl")
-//    public PetTypeDaoImpl petTypeDaoImpl(){
-//        return new PetTypeDaoImpl(hibernateTemplate());
-//    }
+    //MY BEANS
 //
 //    @Bean("petTypeService")
 //    public PetTypeService petTypeService(){
-//        return new PetTypeService(petTypeDaoImpl());
+//        return new PetTypeService();
 //    }
 
     //DB CONFIG
@@ -72,7 +76,7 @@ public class SpringConfig {
     public LocalSessionFactoryBean sessionFactory(){
         LocalSessionFactoryBean sf = new LocalSessionFactoryBean();
         sf.setDataSource(dataSource());
-        sf.setPackagesToScan("java");
+        sf.setPackagesToScan("com.sovadeveloper");
         sf.setHibernateProperties(props());
         return sf;
     }
@@ -93,11 +97,22 @@ public class SpringConfig {
         return ht;
     }
 
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("com.sovadeveloper");
+        factory.setDataSource(dataSource());
+        factory.afterPropertiesSet();
+        return factory.getObject();
+    }
+
     @Bean("transactionManager")
-    public HibernateTransactionManager transactionManager()
-    {
-        HibernateTransactionManager htm = new HibernateTransactionManager();
-        htm.setSessionFactory(sessionFactory().getObject());
-        return htm;
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(entityManagerFactory());
+        return txManager;
     }
 }

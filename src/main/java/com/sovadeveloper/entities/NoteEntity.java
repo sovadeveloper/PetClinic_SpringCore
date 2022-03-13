@@ -5,21 +5,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "petTypes")
-public class PetTypeEntity {
+@Table(name = "notes")
+public class NoteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @Column(name = "title")
+    private String title;
 
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "petType")
-    private List<PetEntity> petEntities;
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private PetEntity pet;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private DoctorEntity doctor;
 }

@@ -11,15 +11,18 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "petTypes")
-public class PetTypeEntity {
+@Table(name = "clients")
+public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "petType")
+    @Column(name = "phone", nullable = false, unique = true)
+    private String phone;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
     private List<PetEntity> petEntities;
 }
