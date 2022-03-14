@@ -1,5 +1,6 @@
 package com.sovadeveloper.services.Impl;
 
+import com.sovadeveloper.dto.DoctorDTO;
 import com.sovadeveloper.dto.NoteDTO;
 import com.sovadeveloper.entities.NoteEntity;
 import com.sovadeveloper.repositories.DoctorRepo;
@@ -69,6 +70,16 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public List<NoteDTO> getAll() throws Exception {
         List<NoteEntity> noteEntities = noteRepo.findAll();
+        List<NoteDTO> noteDTOS = new ArrayList<>();
+        for(NoteEntity noteEntity: noteEntities){
+            noteDTOS.add(NoteDTO.toModel(noteEntity));
+        }
+        return noteDTOS;
+    }
+
+    @Override
+    public List<NoteDTO> getAllByDoctor(DoctorDTO doctorDTO) throws Exception {
+        List<NoteEntity> noteEntities = noteRepo.findAllByDoctor(doctorRepo.getById(doctorDTO.getId()));
         List<NoteDTO> noteDTOS = new ArrayList<>();
         for(NoteEntity noteEntity: noteEntities){
             noteDTOS.add(NoteDTO.toModel(noteEntity));

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/client")
+@CrossOrigin
 public class ClientRestController {
     private final ClientService clientService;
 

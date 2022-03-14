@@ -23,6 +23,9 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public ClientDTO create(ClientEntity clientEntity) throws Exception {
+        if(clientEntity.getPhone().length() != 11){
+            throw new Exception("Номер введен некорректно");
+        }
         ClientEntity clientEntityCheckPhone = clientRepo.findByPhone(clientEntity.getPhone());
         if(clientEntityCheckPhone != null && clientEntityCheckPhone.getPhone().equals(clientEntity.getPhone())){
             throw new Exception("Пользователь с данным номером уже существует");
@@ -40,6 +43,9 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public ClientDTO edit(Long id, ClientEntity clientEntityUpdated) throws Exception {
+        if(clientEntityUpdated.getPhone().length() != 11){
+            throw new Exception("Номер введен некорректно");
+        }
         ClientEntity clientEntity = clientRepo.findById(id)
                 .orElseThrow(() -> new Exception("Такого пользователя не существует"));
         ClientEntity clientEntityCheckPhone = clientRepo.findByPhone(clientEntityUpdated.getPhone());

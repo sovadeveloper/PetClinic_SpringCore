@@ -1,5 +1,6 @@
 package com.sovadeveloper.services;
 
+import com.sovadeveloper.dto.ClientDTO;
 import com.sovadeveloper.dto.PetDTO;
 import com.sovadeveloper.entities.PetEntity;
 
@@ -11,4 +12,5 @@ public interface PetService {
     PetDTO edit(Long id, PetEntity petEntityUpdated) throws Exception;
     Long delete(Long id) throws Exception;
     List<PetDTO> getAll() throws Exception;
+    List<PetDTO> getAllByClient(ClientDTO clientDTO) throws Exception;
 }

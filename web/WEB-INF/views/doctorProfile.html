@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Доктор ' + ${doctor.getName()}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossorigin="anonymous">
+</head>
+<body>
+<div th:insert="mainMenu :: mainMenu"></div>
+
+<div class="container">
+    <div class="row">
+        <h1 class="text-center mt-2" th:text="'Доктор: ' + ${doctor.getName()}"></h1>
+        <div class="col-6 offset-3 text-center">
+            <div class="text-center mt-2">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="name">Имя</span>
+                    <input id="nameValue" type="text" class="form-control" placeholder="Имя"
+                           th:value="${doctor.getName()}" aria-label="name" aria-describedby="name">
+                </div>
+                <div class="text-center">
+                    <a th:text="'Сохранить'" class="btn btn-primary" th:onclick="'editDoctor(' + ${doctor.getId()} + ')'"></a>
+                </div>
+            </div>
+        </div>
+        <p class="fs-4 mt-2 text-center">Добавить запись</p>
+        <div class="row">
+            <div class="col-6 offset-3 text-center">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Краткое описание: </label>
+                    <input class="form-control" type="text" name="title" id="title">
+                </div>
+                <div class="mb-3">
+                    <label for="pet" class="form-label">Выбор типа питомца</label>
+                    <select name="pet" class="pet" id="pet">
+                        <option th:each="pet: ${pets}" th:value="${pet.getId()}" th:text="${pet.getName()}"></option>
+                    </select>
+                </div>
+                <a class="btn btn-primary" th:text="'Добавить'"
+                   th:onclick="'addNote(' + ${doctor.getId()} + ')'"></a>
+            </div>
+        </div>
+        <p class="fs-4 mt-2 text-center">Список записей:</p>
+        <div th:if="${!notes.isEmpty()}">
+            <div class="row">
+                <div class="col-6 offset-3 text-center">
+                    <table class="mt-4 table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Описание</th>
+                            <th scope="col">Животное</th>
+                            <th scope="col">Удалить</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="note: ${notes}">
+                            <td th:text="${note.getTitle()}"></td>
+                            <td th:text="${note.getPet().getPetType().getName() + ' - ' + note.getPet().getName()}"></td>
+                            <td><a class="btn btn-danger" th:text="'Удалить'"
+                                   th:onclick="'deleteNote(' + ${note.getId()} + ', ' + ${doctor.getId()} + ')'"></a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div th:if="${notes.isEmpty()}">
+            <p class="text-center">Список записей пуст!</p>
+        </div>
+        <div class="text-center">
+            <a href="/doctor">Вернуться к списку докторов</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.js "></script>
+<script type="text/javascript" src="../static/js/doctor.js"></script>
+<script type="text/javascript" src="../static/js/note.js"></script>
+</body>
+</html>

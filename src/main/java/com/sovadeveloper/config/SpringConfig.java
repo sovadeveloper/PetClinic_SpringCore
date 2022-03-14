@@ -1,10 +1,13 @@
 package com.sovadeveloper.config;
 
-import com.sovadeveloper.services.Impl.PetTypeServiceImpl;
-import com.sovadeveloper.services.PetTypeService;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -13,18 +16,26 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.Filter;
 import java.util.Properties;
 
 @Configuration
 @EnableJpaRepositories(basePackages = "com.sovadeveloper.repositories")
 @EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan("com.sovadeveloper")
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
 @EnableWebMvc
-public class SpringConfig {
+public class SpringConfig implements WebMvcConfigurer {
     @Value("${spring.datasource.driverClassName}")
     private String driver;
 
@@ -49,12 +60,49 @@ public class SpringConfig {
     @Value("${hibernate.format_sql}")
     private String frmtSql;
 
-    //MY BEANS
-//
-//    @Bean("petTypeService")
-//    public PetTypeService petTypeService(){
-//        return new PetTypeService();
-//    }
+    private final ApplicationContext applicationContext;
+
+    @Autowired
+    public SpringConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    //THYMELEAF
+
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(thymeleafTemplateResolver());
+        templateEngine.setEnableSpringELCompiler(true);
+        return templateEngine;
+    }
+
+    @Bean
+    public SpringResourceTemplateResolver thymeleafTemplateResolver() {
+        SpringResourceTemplateResolver templateResolver
+                = new SpringResourceTemplateResolver();
+        templateResolver.setPrefix("/WEB-INF/views/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setCharacterEncoding("UTF-8");
+        return templateResolver;
+    }
+
+    @Bean
+    public ThymeleafViewResolver thymeleafViewResolver() {
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setCharacterEncoding("UTF-8");
+        viewResolver.setContentType("text/html");
+        viewResolver.setForceContentType(true);
+        return viewResolver;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/js/**")
+                .addResourceLocations("/WEB-INF/static/js/").setCachePeriod(31556926);
+    }
 
     //DB CONFIG
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MenuUser</title>
+</head>
+<body>
+    <div th:fragment="mainMenu">
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <a class="fs-4" href="/">PetClinic</a>
+                </div>
+                <div class="col-8 d-flex justify-content-around">
+                    <a class="fs-3" href="/client">Клиенты</a>
+                    <a class="fs-3" href="/doctor">Доктора</a>
+                    <a class="fs-3" href="/petType">Типы питомцев</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

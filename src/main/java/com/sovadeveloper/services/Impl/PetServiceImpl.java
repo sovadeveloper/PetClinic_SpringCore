@@ -1,6 +1,8 @@
 package com.sovadeveloper.services.Impl;
 
+import com.sovadeveloper.dto.ClientDTO;
 import com.sovadeveloper.dto.PetDTO;
+import com.sovadeveloper.entities.ClientEntity;
 import com.sovadeveloper.entities.PetEntity;
 import com.sovadeveloper.repositories.ClientRepo;
 import com.sovadeveloper.repositories.PetRepo;
@@ -69,6 +71,16 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<PetDTO> getAll() throws Exception {
         List<PetEntity> petEntities = petRepo.findAll();
+        List<PetDTO> petDTOS = new ArrayList<>();
+        for(PetEntity petEntity: petEntities){
+            petDTOS.add(PetDTO.toModel(petEntity));
+        }
+        return petDTOS;
+    }
+
+    @Override
+    public List<PetDTO> getAllByClient(ClientDTO clientDTO) throws Exception {
+        List<PetEntity> petEntities = petRepo.findAllByClient(clientRepo.getById(clientDTO.getId()));
         List<PetDTO> petDTOS = new ArrayList<>();
         for(PetEntity petEntity: petEntities){
             petDTOS.add(PetDTO.toModel(petEntity));

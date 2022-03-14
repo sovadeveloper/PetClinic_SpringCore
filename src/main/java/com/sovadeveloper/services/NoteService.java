@@ -1,5 +1,6 @@
 package com.sovadeveloper.services;
 
+import com.sovadeveloper.dto.DoctorDTO;
 import com.sovadeveloper.dto.NoteDTO;
 import com.sovadeveloper.entities.NoteEntity;
 
@@ -11,4 +12,5 @@ public interface NoteService {
     NoteDTO edit(Long id, NoteEntity noteEntityUpdated) throws Exception;
     Long delete(Long id) throws Exception;
     List<NoteDTO> getAll() throws Exception;
+    List<NoteDTO> getAllByDoctor(DoctorDTO doctorDTO) throws Exception;
 }

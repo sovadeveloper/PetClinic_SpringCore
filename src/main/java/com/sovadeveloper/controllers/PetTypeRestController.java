@@ -1,8 +1,10 @@
 package com.sovadeveloper.controllers;
 
+import com.sovadeveloper.dto.PetTypeDTO;
 import com.sovadeveloper.entities.PetTypeEntity;
 import com.sovadeveloper.services.PetTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,12 @@ public class PetTypeRestController {
         this.petTypeService = petTypeService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAll(){
         try {
+            for (PetTypeDTO petTypeEntity: petTypeService.getAll()){
+                System.out.println(petTypeEntity.getName());
+            }
             return ResponseEntity.ok(petTypeService.getAll());
         }catch (Exception e){
             e.printStackTrace();
