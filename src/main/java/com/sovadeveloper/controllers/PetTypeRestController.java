@@ -21,9 +21,6 @@ public class PetTypeRestController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAll(){
         try {
-            for (PetTypeDTO petTypeEntity: petTypeService.getAll()){
-                System.out.println(petTypeEntity.getName());
-            }
             return ResponseEntity.ok(petTypeService.getAll());
         }catch (Exception e){
             e.printStackTrace();

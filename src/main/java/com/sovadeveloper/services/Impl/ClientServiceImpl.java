@@ -2,27 +2,39 @@ package com.sovadeveloper.services.Impl;
 
 import com.sovadeveloper.dto.ClientDTO;
 import com.sovadeveloper.entities.ClientEntity;
+import com.sovadeveloper.entities.Role;
 import com.sovadeveloper.repositories.ClientRepo;
 import com.sovadeveloper.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
-public class ClientServiceImpl implements ClientService {
+public class ClientServiceImpl implements ClientService, UserDetailsService {
     private final ClientRepo clientRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientServiceImpl(ClientRepo clientRepo) {
+    public ClientServiceImpl(ClientRepo clientRepo, PasswordEncoder passwordEncoder) {
         this.clientRepo = clientRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
     public ClientDTO create(ClientEntity clientEntity) throws Exception {
+        if(clientEntity.getPassword().length() < 1){
+            throw new Exception("Пароль не может быть пустым");
+        }
         if(clientEntity.getPhone().length() != 11){
             throw new Exception("Номер введен некорректно");
         }
@@ -30,6 +42,10 @@ public class ClientServiceImpl implements ClientService {
         if(clientEntityCheckPhone != null && clientEntityCheckPhone.getPhone().equals(clientEntity.getPhone())){
             throw new Exception("Пользователь с данным номером уже существует");
         }
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.CLIENT);
+        clientEntity.setRoles(roles);
+        clientEntity.setPassword(passwordEncoder.encode(clientEntity.getPassword()));
         return ClientDTO.toModel(clientRepo.save(clientEntity));
     }
 
@@ -53,7 +69,7 @@ public class ClientServiceImpl implements ClientService {
                 && !clientEntityCheckPhone.getId().equals(clientEntity.getId())){
             throw new Exception("Пользователь с данным номером уже существует");
         }
-        clientEntity.setName(clientEntityUpdated.getName());
+        clientEntity.setUsername(clientEntityUpdated.getUsername());
         clientEntity.setPhone(clientEntityUpdated.getPhone());
         return ClientDTO.toModel(clientRepo.save(clientEntity));
     }
@@ -76,5 +92,10 @@ public class ClientServiceImpl implements ClientService {
             clientDTOS.add(ClientDTO.toModel(clientEntity));
         }
         return clientDTOS;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return clientRepo.findClientEntityByUsername(username);
     }
 }
