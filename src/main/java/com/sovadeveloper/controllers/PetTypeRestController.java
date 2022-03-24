@@ -3,9 +3,12 @@ package com.sovadeveloper.controllers;
 import com.sovadeveloper.dto.PetTypeDTO;
 import com.sovadeveloper.entities.PetTypeEntity;
 import com.sovadeveloper.services.PetTypeService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +21,7 @@ public class PetTypeRestController {
         this.petTypeService = petTypeService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAll(){
         try {
@@ -28,6 +32,7 @@ public class PetTypeRestController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable Long id){
         try {
@@ -38,6 +43,7 @@ public class PetTypeRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity create(@RequestBody PetTypeEntity petTypeEntity){
         try {
@@ -48,6 +54,7 @@ public class PetTypeRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity edit(@PathVariable Long id, @RequestBody PetTypeEntity petTypeEntity){
         try {
@@ -58,6 +65,7 @@ public class PetTypeRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id){
         try {

@@ -25,12 +25,38 @@ function addClient(){
     });
 }
 
+function personalEdit(id){
+    let name = document.getElementById("nameValue").value;
+    let phone = document.getElementById("phoneValue").value;
+    let data = {
+        id: id,
+        username: name,
+        phone: phone
+    }
+    $.ajax({
+        url: '/api/client/' + id,
+        type: 'PUT',
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=UTF-8",
+        dataType: "json",
+        success: function(result) {
+            console.log("Пользователь успешно отредактирован")
+            console.log(result)
+            window.location.href = "/personalAccount/" + id;
+        },
+        error: function (result){
+            console.log("Ошибка")
+            console.log(result);
+        }
+    });
+}
+
 function editClient(id){
     let name = document.getElementById("nameValue").value;
     let phone = document.getElementById("phoneValue").value;
     let data = {
         id: id,
-        name: name,
+        username: name,
         phone: phone
     }
     $.ajax({

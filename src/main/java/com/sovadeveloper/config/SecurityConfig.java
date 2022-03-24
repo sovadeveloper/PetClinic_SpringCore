@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,8 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableWebMvc
 @EnableWebSecurity
+@EnableWebMvc
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 @ComponentScan("com.sovadeveloper")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ClientServiceImpl clientService;
@@ -32,8 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                      .antMatchers("/client/**")
-                      .hasAuthority(Role.CLIENT.getAuthority())
+                    .antMatchers("/api/**", "/personalAccount/**")
+                        .hasAnyAuthority(Role.CLIENT.getAuthority(), Role.ADMIN.getAuthority())
+                    .antMatchers( "/doctor/**", "/petType/**", "/client/**")
+                        .hasAuthority(Role.ADMIN.getAuthority())
+                    .antMatchers("/", "/registration").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .headers().frameOptions().disable()

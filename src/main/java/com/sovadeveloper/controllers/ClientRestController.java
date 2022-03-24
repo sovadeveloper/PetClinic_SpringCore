@@ -1,14 +1,18 @@
 package com.sovadeveloper.controllers;
 
 import com.sovadeveloper.entities.ClientEntity;
+import com.sovadeveloper.entities.Role;
 import com.sovadeveloper.services.ClientService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/client")
-@CrossOrigin
 public class ClientRestController {
     private final ClientService clientService;
 
@@ -17,6 +21,7 @@ public class ClientRestController {
         this.clientService = clientService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping
     public ResponseEntity getAll(){
         try {
@@ -27,6 +32,7 @@ public class ClientRestController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable Long id){
         try{
@@ -47,6 +53,7 @@ public class ClientRestController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @PutMapping("/{id}")
     public ResponseEntity edit(@PathVariable Long id, @RequestBody ClientEntity clientEntity){
         try {
@@ -56,6 +63,7 @@ public class ClientRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id){
         try {

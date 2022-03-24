@@ -11,7 +11,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
@@ -20,8 +19,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "com.sovadeveloper.repositories")
 @EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan("com.sovadeveloper")
-@EnableWebMvc
-@Import(value = {ThymeleafConfig.class, SecurityConfig.class})
+@Import(value = {MvcConfig.class, SecurityConfig.class})
 @PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
 public class SpringConfig{
     @Value("${spring.datasource.driverClassName}")

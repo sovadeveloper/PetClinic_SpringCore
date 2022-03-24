@@ -6,15 +6,47 @@
 </head>
 <body>
     <div th:fragment="mainMenu">
-        <div class="container">
+        <div class="container mt-3">
             <div class="row">
-                <div class="col-4">
-                    <a class="fs-4" href="/">PetClinic</a>
+                <div class="col-10">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-2">
+                                <a class="fs-4" href="/">PetClinic</a>
+                            </div>
+                            <div class="col-10">
+                                <div class="container">
+                                    <div th:if="${currentUser != null}" class="row">
+                                        <div th:each="role: ${currentUser.getRoles()}">
+                                            <div th:if="${role.name() == 'CLIENT'}" class="d-flex justify-content-around">
+                                                <a class="fs-3" th:href="@{/personalAccount/{id}
+                                                    (id=${currentUser.getId()})}">Профиль</a>
+                                            </div>
+                                        </div>
+                                        <div th:each="role: ${currentUser.getRoles()}">
+                                            <div th:if="${role.name() == 'ADMIN'}" class="d-flex justify-content-around">
+                                                <a class="fs-3" href="/client">Клиенты</a>
+                                                <a class="fs-3 mr-2" href="/doctor">Доктора</a>
+                                                <a class="fs-3" href="/petType">Типы питомцев</a>
+                                                <a class="fs-3" th:href="@{/personalAccount/{id}
+                                                    (id=${currentUser.getId()})}">Профиль</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-8 d-flex justify-content-around">
-                    <a class="fs-3" href="/client">Клиенты</a>
-                    <a class="fs-3" href="/doctor">Доктора</a>
-                    <a class="fs-3" href="/petType">Типы питомцев</a>
+                <div class="col-2">
+                    <div th:if="${currentUser == null}" class="mt-2">
+                        <a class="btn btn-primary" th:href="@{/login}">Войти</a>
+                    </div>
+                    <div th:if="${currentUser != null}" class="mt-2">
+                        <form action="/logout" method="post">
+                            <button type="submit" class="btn btn-danger">Выйти</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

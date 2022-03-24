@@ -88,9 +88,7 @@ public class ClientServiceImpl implements ClientService, UserDetailsService {
     public List<ClientDTO> getAll() throws Exception {
         List<ClientEntity> clientEntities = clientRepo.findAll();
         List<ClientDTO> clientDTOS = new ArrayList<>();
-        for(ClientEntity clientEntity: clientEntities){
-            clientDTOS.add(ClientDTO.toModel(clientEntity));
-        }
+        clientEntities.forEach(cl -> clientDTOS.add(ClientDTO.toModel(cl)));
         return clientDTOS;
     }
 

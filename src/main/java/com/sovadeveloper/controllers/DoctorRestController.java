@@ -1,9 +1,13 @@
 package com.sovadeveloper.controllers;
 
 import com.sovadeveloper.entities.DoctorEntity;
+import com.sovadeveloper.entities.Role;
 import com.sovadeveloper.services.DoctorService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +20,7 @@ public class DoctorRestController {
         this.doctorService = doctorService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping
     public ResponseEntity getAll(){
         try{
@@ -26,6 +31,7 @@ public class DoctorRestController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable Long id){
         try {
@@ -36,6 +42,7 @@ public class DoctorRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity create(@RequestBody DoctorEntity doctorEntity){
         try {
@@ -46,6 +53,7 @@ public class DoctorRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity edit(@PathVariable Long id, @RequestBody DoctorEntity doctorEntity){
         try {
@@ -56,6 +64,7 @@ public class DoctorRestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id){
         try {

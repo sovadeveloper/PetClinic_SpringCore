@@ -33,7 +33,8 @@
                     <tbody>
                     <tr th:each="doctor: ${doctors}">
                         <td><a th:href="@{/doctor/{id}(id=${doctor.getId()})}" th:text="${doctor.getName()}"></a></td>
-                        <td><a class="btn btn-danger" th:text="'Удалить'" th:onclick="'deleteDoctor(' + ${doctor.getId()} + ')'"></a></td>
+                        <td><a class="btn btn-danger" th:text="'Удалить'"
+                               th:onclick="'deleteDoctor(' + ${doctor.getId()} + ')'"></a></td>
                     </tr>
                     </tbody>
                 </table>

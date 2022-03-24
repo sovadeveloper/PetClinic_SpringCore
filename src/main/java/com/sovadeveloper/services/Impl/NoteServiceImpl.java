@@ -71,9 +71,7 @@ public class NoteServiceImpl implements NoteService {
     public List<NoteDTO> getAll() throws Exception {
         List<NoteEntity> noteEntities = noteRepo.findAll();
         List<NoteDTO> noteDTOS = new ArrayList<>();
-        for(NoteEntity noteEntity: noteEntities){
-            noteDTOS.add(NoteDTO.toModel(noteEntity));
-        }
+        noteEntities.forEach(note -> noteDTOS.add(NoteDTO.toModel(note)));
         return noteDTOS;
     }
 
@@ -81,9 +79,7 @@ public class NoteServiceImpl implements NoteService {
     public List<NoteDTO> getAllByDoctor(DoctorDTO doctorDTO) throws Exception {
         List<NoteEntity> noteEntities = noteRepo.findAllByDoctor(doctorRepo.getById(doctorDTO.getId()));
         List<NoteDTO> noteDTOS = new ArrayList<>();
-        for(NoteEntity noteEntity: noteEntities){
-            noteDTOS.add(NoteDTO.toModel(noteEntity));
-        }
+        noteEntities.forEach(note -> noteDTOS.add(NoteDTO.toModel(note)));
         return noteDTOS;
     }
 }

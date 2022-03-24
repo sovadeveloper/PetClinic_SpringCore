@@ -56,9 +56,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorDTO> getAll() throws Exception {
         List<DoctorEntity> doctorEntities = doctorRepo.findAll();
         List<DoctorDTO> doctorDTOS = new ArrayList<>();
-        for(DoctorEntity doctorEntity: doctorEntities){
-            doctorDTOS.add(DoctorDTO.toModel(doctorEntity));
-        }
+        doctorEntities.forEach(doc -> doctorDTOS.add(DoctorDTO.toModel(doc)));
         return doctorDTOS;
     }
 }

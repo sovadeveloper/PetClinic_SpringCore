@@ -56,9 +56,7 @@ public class PetTypeServiceImpl implements PetTypeService {
     public List<PetTypeDTO> getAll() throws Exception {
         List<PetTypeEntity> petTypeEntities = petTypeRepo.findAll();
         List<PetTypeDTO> petTypeDTOS = new ArrayList<>();
-        for(PetTypeEntity petTypeEntity: petTypeEntities){
-            petTypeDTOS.add(PetTypeDTO.toModel(petTypeEntity));
-        }
+        petTypeEntities.forEach(pt -> petTypeDTOS.add(PetTypeDTO.toModel(pt)));
         return petTypeDTOS;
     }
 }
